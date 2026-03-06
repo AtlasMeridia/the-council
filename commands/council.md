@@ -20,8 +20,8 @@ Convene 4 major AI models to independently assess a problem, idea, or project. E
 | Model | Provider | Method |
 |-------|----------|--------|
 | **Claude Opus** | Anthropic | You (direct reasoning) |
-| **Gemini** | Google | `gemini` CLI |
-| **GPT-4.1** | OpenAI | API |
+| **Gemini 3.1 Pro** | Google | API |
+| **GPT-5.4** | OpenAI | `codex` CLI |
 | **Grok 4** | xAI | API |
 
 ## Workflow
@@ -103,18 +103,18 @@ Output the complete report in this format:
                          THE COUNCIL
 ═══════════════════════════════════════════════════════════════
 Problem: [1-line restatement of the problem]
-Models: Claude Opus · Gemini · GPT-4.1 · Grok 4
+Models: Claude Opus · Gemini 3.1 Pro · GPT-5.4 · Grok 4
 ═══════════════════════════════════════════════════════════════
 
 CLAUDE OPUS (Anthropic)
 ────────────────────────────────────────
 [Your assessment from Step 2]
 
-GEMINI (Google)
+GEMINI 3.1 PRO (Google)
 ────────────────────────────────────────
 [Gemini's response]
 
-GPT-4.1 (OpenAI)
+GPT-5.4 (OpenAI)
 ────────────────────────────────────────
 [GPT's response]
 
