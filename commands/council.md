@@ -26,9 +26,21 @@ Convene 4 major AI models to independently assess a problem, idea, or project. E
 
 ## Workflow
 
-### Step 1: Prepare the Prompt
+### Step 1: Create Session Directory
 
-Write the following to `/tmp/council-prompt.txt`, replacing `{PROBLEM}` with $ARGUMENTS:
+Each council session gets a unique directory to preserve history. Run:
+
+```bash
+COUNCIL_SESSION="${COUNCIL_HOME:-$HOME/.council}/sessions/$(date +%Y%m%d-%H%M%S)"
+mkdir -p "$COUNCIL_SESSION"
+echo "$COUNCIL_SESSION"
+```
+
+Use `$COUNCIL_SESSION` as the base path for all files in this session.
+
+### Step 2: Prepare the Prompt
+
+Write the following to `$COUNCIL_SESSION/prompt.txt`, replacing `{PROBLEM}` with $ARGUMENTS:
 
 ```
 You are participating in a council of AI models. Each model provides an independent assessment of the same problem. Your perspective will be compared alongside assessments from Claude, Gemini, GPT, and Grok.
@@ -56,13 +68,13 @@ One non-obvious angle, connection, or consideration that adds unique value. This
 Be direct and opinionated. Don't hedge excessively. Your unique perspective is what matters.
 ```
 
-### Step 2: Generate Your Own Assessment
+### Step 3: Generate Your Own Assessment
 
-**BEFORE launching external queries**, generate YOUR OWN independent assessment using the same structure above. Think through the problem thoroughly. Write your assessment to `/tmp/council-claude.txt` using the Write tool.
+**BEFORE launching external queries**, generate YOUR OWN independent assessment using the same structure above. Think through the problem thoroughly. Write your assessment to `$COUNCIL_SESSION/claude.txt` using the Write tool.
 
 This ensures your perspective is truly independent — not influenced by reading other models' responses.
 
-### Step 3: Fan Out to External Models
+### Step 4: Fan Out to External Models
 
 Resolve the script path first:
 
@@ -73,28 +85,28 @@ COUNCIL_SCRIPT="${COUNCIL_HOME:-$HOME/.council}/scripts/council_query.sh"
 Launch all 3 queries in parallel using `run_in_background: true`:
 
 ```bash
-bash "$COUNCIL_SCRIPT" gemini /tmp/council-prompt.txt /tmp/council-gemini.txt
+bash "$COUNCIL_SCRIPT" gemini "$COUNCIL_SESSION/prompt.txt" "$COUNCIL_SESSION/gemini.txt"
 ```
 
 ```bash
-bash "$COUNCIL_SCRIPT" openai /tmp/council-prompt.txt /tmp/council-openai.txt
+bash "$COUNCIL_SCRIPT" openai "$COUNCIL_SESSION/prompt.txt" "$COUNCIL_SESSION/openai.txt"
 ```
 
 ```bash
-bash "$COUNCIL_SCRIPT" grok /tmp/council-prompt.txt /tmp/council-grok.txt
+bash "$COUNCIL_SCRIPT" grok "$COUNCIL_SESSION/prompt.txt" "$COUNCIL_SESSION/grok.txt"
 ```
 
-### Step 4: Collect Responses
+### Step 5: Collect Responses
 
 Wait for all background tasks to complete using TaskOutput. Then read all output files:
 
-- `/tmp/council-gemini.txt`
-- `/tmp/council-openai.txt`
-- `/tmp/council-grok.txt`
+- `$COUNCIL_SESSION/gemini.txt`
+- `$COUNCIL_SESSION/openai.txt`
+- `$COUNCIL_SESSION/grok.txt`
 
 If a model returned an ERROR line, note the failure and proceed with the remaining models.
 
-### Step 5: Present the Council Report
+### Step 6: Present the Council Report
 
 Output the complete report in this format:
 
